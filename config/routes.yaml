@@ -1,0 +1,25 @@
+#index:
+#    path: /
+#    controller: App\Controller\DefaultController::index
+app_front:
+    resource: App\Controller\FrontController
+    type: annotation
+app_boutique:
+    resource: App\Controller\BoutiqueController
+    type: annotation
+
+app_shoping_cart:
+    resource: App\Controller\ShopingCartController
+    type: annotation
+app_about:
+    resource: App\Controller\AboutController
+    type: annotation
+app_contact:
+    resource: App\Controller\ContactController
+    type: annotation
+app_test:
+    resource: App\Controller\TestController
+    type: annotation
+app_admin:
+    resource: App\Controller\AdminController
+    type: annotation
