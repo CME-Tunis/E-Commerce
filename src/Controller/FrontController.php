@@ -26,20 +26,5 @@ class FrontController extends AbstractController
             'produits' => $produits,
         ]);
     }
-    #[Route('/produit/{id}', name: 'front_produit_detail', methods: ['GET'])]
-    public function produitDetail($id, ProduitRepository $produitRepository): Response
-    {
-        // Récupérer le produit par ID
-        $produit = $produitRepository->find($id);
 
-        // Vérifier si le produit existe
-        if (!$produit) {
-            throw $this->createNotFoundException('Le produit demandé n\'existe pas.');
-        }
-
-        // Retourner une vue pour afficher le produit
-        return $this->render('front/produit_detail.html.twig', [
-            'produit' => $produit,
-        ]);
-    }
 }

@@ -2046,7 +2046,11 @@ input.num-product::-webkit-inner-spin-button {
 .block2-pic {
   position: relative;
 }
-
+.block2-pic img {
+  width: 100%;  /* L'image occupe toute la largeur du conteneur */
+  height: auto; /* L'image conserve ses proportions */
+  display: block; /* Pour éviter l'espace en dessous de l'image */
+}
 .block2-btn {
   position: absolute;
   bottom: -50px;
