@@ -1,9 +1,9 @@
-<head>
 
+<head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      {% block title %} <title>CME Dashboard </title>   {% endblock %}
+      {% block title %} <title>CME Dashboard</title>   {% endblock %}
     <link href="{{ asset ('assets/images/cmeLogo.png') }}" rel="icon">
     <link href="{{ asset ('assets/images/cmeLogo.png') }}" rel="apple-touch-icon">
     <!-- plugins:css -->
@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="{{ asset ('assets/vendors/font-awesome/css/font-awesome.min.css') }}">
     <!-- End plugin css for this page -->
     <!-- inject:css -->
+
     <!-- endinject -->
     <!-- Layout styles -->
     <link rel="stylesheet" href="{{ asset ('assets/css/style.css') }}">
@@ -30,12 +31,12 @@
 <body>
 
     <div class="container-scroller">
-{% block nav1 %}
+ {% block nav1 %}
         <!-- partial:partials/_sidebar.html -->
-        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+         <nav class="sidebar sidebar-offcanvas" id="sidebar">
             <ul class="nav">
                 <li class="nav-item nav-profile border-bottom">
-                    <a class="nav-link" href="{{ path('app_admin') }}">
+                    <a class="nav-link" href="index.html">
 
                         <img src="{{ asset ('assets/images/cmeLogo.png')}}" alt="profile">
 
@@ -183,11 +184,11 @@
                         <div class="header-left">
                         <div class="header-right d-flex flex-wrap mt-2 mt-sm-0">
                            <div class="d-flex align-items-center">
-                                <a href="{{ path('app_admin') }}">
+                                <a href="#">
                                     <p class="m-0 pe-3">CME</p>
                                 </a>
-                                <a class="ps-3 me-4" href="{{ path('app_produit_new') }}">
-                                    <p class="m-0">Add Product</p>
+                                 <a href="{{ path('app_produit_index') }}">
+                                    <p class="m-0">back to list</p>
                                 </a>
                             </div>
                             </div>
@@ -196,64 +197,13 @@
                             <div class="d-flex align-items-center">
                                 
                             </div>
-                           <button type="button" class="btn-orange mt-2 mt-sm-0 btn-icon-text" id="AddProduct">
-                             <i class="mdi mdi-plus-circle"></i> Add Product
-                            </button>
-                          <script>
-                             document.getElementById("AddProduct").onclick = function()
-                              {
-                             window.location.href = "{{ path('app_produit_new') }}";
-                              };
-                          </script>
-
                         </div>
                     </div>
 
-
 {% block content %}
-    <h1>Produit index</h1>
+    <h1>Create new Category</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>NomP</th>
-                <th>Image</th>
-                <th>Stock</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Prix</th>
-                <th>Categorie</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for produit in produits %}
-            <tr>
-                <td>{{ produit.id }}</td>
-                <td>{{ produit.nomP }}</td>
-              <td><img src="{{ asset('produit/' ~ produit.image) }}" width="150px"></td>
-                <td>{{ produit.stock }}</td>
-                <td>{{ produit.description }}</td>
-                <td>{{ produit.status.value }}</td>
-                <td>{{ produit.prix }}</td>
-                     <td>{{ produit.ProdCategory}}</td>
-                <td>
-                    <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn btn-primary btn-sm">show</a>
-                    <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-primary btn-sm" style="background-color: #008000; color: #ffffff;">edit</a>
-                    <form method="post" action="{{ path('app_produit_delete', {'id': produit.id}) }}" onsubmit="return confirm('Êtes-vous sûr ?');" style="display:inline;">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
-                        <button class="btn btn-danger btn-sm">Delate</button>
-                    </form>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    {{ include('category/_form.html.twig') }}
 
-   
+    <a href="{{ path('app_category_index') }}">back to list</a>
 {% endblock %}

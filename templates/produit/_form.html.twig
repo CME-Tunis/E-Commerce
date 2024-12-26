@@ -35,6 +35,11 @@
                     {{ form_widget(form.prix, {'attr': {'class': 'form-control form-control-sm'}}) }}
                     {{ form_errors(form.prix) }}
                 </div>
+                 <div class="form-group mb-3">
+                    {{ form_label(form.ProdCategory, 'Category') }}
+                    {{ form_widget(form.ProdCategory, {'attr': {'class': 'form-control form-control-sm'}}) }}
+                    {{ form_errors(form.ProdCategory) }}
+                </div>
                 <div class="text-center">
                     <button type="submit" class="btn btn-success btn-sm">
                         {{ button_label|default('Enregistrer') }}

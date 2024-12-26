@@ -2052,7 +2052,7 @@ input.num-product::-webkit-inner-spin-button {
   display: block; /* Pour éviter l'espace en dessous de l'image */
 }
 .block2-btn {
-  position: absolute;
+  position: auto;
   bottom: -50px;
   left: 50%;
   -webkit-transform: translateX(-50%);

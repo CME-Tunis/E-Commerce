@@ -25,6 +25,7 @@ class ProduitType extends AbstractType
                     ])
                 ]
             ])
+            ->add('ProdCategory', null)
             ->add('stock')
             ->add('description')
             ->add('status', ChoiceType::class, [

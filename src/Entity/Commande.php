@@ -71,7 +71,7 @@ class Commande
     }
 
     public function addProduit(Produit $produit): static
-    {
+     {
         if (!$this->produits->contains($produit)) {
             $this->produits->add($produit);
             $produit->addPanier($this);

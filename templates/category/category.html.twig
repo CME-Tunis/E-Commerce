@@ -208,52 +208,34 @@
 
                         </div>
                     </div>
-
-
 {% block content %}
-    <h1>Produit index</h1>
+    <h1>Category</h1>
 
     <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
-                <th>NomP</th>
-                <th>Image</th>
-                <th>Stock</th>
-                <th>Description</th>
-                <th>Status</th>
-                <th>Prix</th>
-                <th>Categorie</th>
+                <th>Type</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for produit in produits %}
+        {% for category in categories %}
             <tr>
-                <td>{{ produit.id }}</td>
-                <td>{{ produit.nomP }}</td>
-              <td><img src="{{ asset('produit/' ~ produit.image) }}" width="150px"></td>
-                <td>{{ produit.stock }}</td>
-                <td>{{ produit.description }}</td>
-                <td>{{ produit.status.value }}</td>
-                <td>{{ produit.prix }}</td>
-                     <td>{{ produit.ProdCategory}}</td>
+                <td>{{ category.id }}</td>
+                <td>{{ category.type }}</td>
                 <td>
-                    <a href="{{ path('app_produit_show', {'id': produit.id}) }}" class="btn btn-primary btn-sm">show</a>
-                    <a href="{{ path('app_produit_edit', {'id': produit.id}) }}" class="btn btn-primary btn-sm" style="background-color: #008000; color: #ffffff;">edit</a>
-                    <form method="post" action="{{ path('app_produit_delete', {'id': produit.id}) }}" onsubmit="return confirm('Êtes-vous sûr ?');" style="display:inline;">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
-                        <button class="btn btn-danger btn-sm">Delate</button>
-                    </form>
+                    <a href="{{ path('app_category_show', {'id': category.id}) }}">show</a>
+                    <a href="{{ path('app_category_edit', {'id': category.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="8">no records found</td>
+                <td colspan="3">no records found</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-   
+    <a href="{{ path('app_category_new') }}">Create new</a>
 {% endblock %}
