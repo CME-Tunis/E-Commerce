@@ -236,5 +236,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
+public function __toString(): string
+    {
+        // Retournez une représentation significative de l'utilisateur
+        return $this->getNom(); // ou une autre propriété, comme l'email ou le nom
+    }
  }

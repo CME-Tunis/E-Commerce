@@ -31,8 +31,10 @@ class Produit
     #[ORM\Column]
     private ?float $prix = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(inversedBy: 'produits')]
     private ?Category $ProdCategory = null;
+
+ 
 
     public function getId(): ?int
     {
@@ -123,5 +125,11 @@ class Produit
 
         return $this;
     }
+    public function __toString(): string
+    {
+        // Retournez une représentation textuelle de l'objet
+        return $this->getNomP(); // Par exemple, le nom du produit
+    }
+
     
 }
