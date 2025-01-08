@@ -17,7 +17,7 @@ class FrontController extends AbstractController
         return $this->render('front/index.html.twig', [
             'controller_name' => 'FrontController',
             'produits' => $produitRepository->findAll(),
-            'categories' => $categorieRepository->findAll(),
+            'categories' => $categorieRepository->findAll(), 
         ]);
     }
 

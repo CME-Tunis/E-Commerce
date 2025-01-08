@@ -79,17 +79,17 @@
 								
 							</li>
 
-							<li>
+							<li class="active-menu">
 								<a href="{{path ('app_boutique') }}">Shop</a>
 							</li>
 
 							<li class="label1" data-label1="Cart">
-								<a href="{{path ('app_shoping_cart') }}">Features</a>
+								<a href="{{path ('app_shoping_cart') }}">Cart</a>
 							</li>
 
 					
 
-							<li class="active-menu">
+							<li >
 								<a href="{{ path ('app_about')}}">About</a>
 							</li>
 
@@ -305,9 +305,9 @@
 					<div class="block2">
 						<div class="block2-pic hov-img0">
 							<img src="\produit\{{produit.image}}" alt="IMG-PRODUCT">
-<a href="{{path ('app_produitdetail')}}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-								view more
-							</a>
+<a href="{{ path('app_produitdetail', {'id': produit.id}) }}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+    View More
+</a>
 						</div>
 
 						<div class="block2-txt flex-w flex-t p-t-14">
