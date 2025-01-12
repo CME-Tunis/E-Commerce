@@ -16,7 +16,7 @@ class ProduitdetailController extends AbstractController
     
         public function produitDetail( int $id, ProduitRepository $produitRepository,  CategoryRepository $categorieRepository): Response {
             // Récupérer le produit par son ID
-            $produit = $produitRepository->find($id);
+             $produit = $produitRepository->find($id);
     
             // Vérification si le produit existe
             if (!$produit) {

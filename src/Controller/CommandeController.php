@@ -10,15 +10,30 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 #[Route('/commande')]
 class CommandeController extends AbstractController
 {
     #[Route('/', name: 'app_commande_index', methods: ['GET'])]
-    public function index(CommandeRepository $commandeRepository): Response
+    public function index(CommandeRepository $commandeRepository,TokenStorageInterface $tokenStorage,
+    AuthorizationCheckerInterface $authChecker): Response
     {
+        $token = $tokenStorage->getToken();
+    
+        if (!$token || !$token->getUser()) {
+            throw $this->createAccessDeniedException('No user is logged in.');
+        }
+    
+        if ($authChecker->isGranted('ROLE_ADMIN')) {
+            // L'utilisateur a le rôle ROLE_ADMIN
+        }
+    
+        $user = $token->getUser();
         return $this->render('commande/index.html.twig', [
             'commandes' => $commandeRepository->findAll(),
+            'user' => $user,
         ]);
     }
 

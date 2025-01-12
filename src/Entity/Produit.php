@@ -3,6 +3,8 @@
 namespace App\Entity;
 use App\Enum\Status;
 use App\Repository\ProduitRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProduitRepository::class)]
@@ -33,6 +35,14 @@ class Produit
 
     #[ORM\ManyToOne(inversedBy: 'produits')]
     private ?Category $ProdCategory = null;
+
+    #[ORM\ManyToMany(targetEntity: Commande::class, inversedBy: 'panier')]
+    private Collection $panier;
+
+    public function __construct()
+    {
+        $this->panier = new ArrayCollection();
+    }
 
  
 
@@ -129,6 +139,30 @@ class Produit
     {
         // Retournez une représentation textuelle de l'objet
         return $this->getNomP(); // Par exemple, le nom du produit
+    }
+
+    /**
+     * @return Collection<int, Commande>
+     */
+    public function getPanier(): Collection
+    {
+        return $this->panier;
+    }
+
+    public function addPanier(Commande $panier): static
+    {
+        if (!$this->panier->contains($panier)) {
+            $this->panier->add($panier);
+        }
+
+        return $this;
+    }
+
+    public function removePanier(Commande $panier): static
+    {
+        $this->panier->removeElement($panier);
+
+        return $this;
     }
 
     

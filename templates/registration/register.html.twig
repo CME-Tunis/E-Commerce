@@ -63,6 +63,12 @@
             
 </div>
                         </div>
+                        <div class="form-group">
+    {{ form_row(registrationForm.imageUser, {
+        'label': 'Upload Image',
+        'attr': {'class': 'form-control'}
+    }) }}
+</div>
              <div class="form-group">
                     {{ form_row(registrationForm.email, {
                         'label': 'Email',

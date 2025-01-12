@@ -22,15 +22,18 @@ class Commande
     #[ORM\Column]
     private ?float $prix = null;
 
-    #[ORM\ManyToMany(targetEntity: Produit::class, mappedBy: 'panier')]
-    private Collection $produits;
+
 
     #[ORM\ManyToOne(inversedBy: 'UserCommande')]
     private ?User $user = null;
 
+    #[ORM\ManyToMany(targetEntity: Produit::class, mappedBy: 'panier')]
+    private Collection $panier;
+
     public function __construct()
     {
         $this->produits = new ArrayCollection();
+        $this->panier = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -62,32 +65,7 @@ class Commande
         return $this;
     }
 
-    /**
-     * @return Collection<int, Produit>
-     */
-    public function getProduits(): Collection
-    {
-        return $this->produits;
-    }
-
-    public function addProduit(Produit $produit): static
-    {
-        if (!$this->produits->contains($produit)) {
-            $this->produits->add($produit);
-            $produit->addPanier($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProduit(Produit $produit): static
-    {
-        if ($this->produits->removeElement($produit)) {
-            $produit->removePanier($this);
-        }
-
-        return $this;
-    }
+   
 
     public function getUser(): ?User
     {
@@ -97,6 +75,33 @@ class Commande
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Produit>
+     */
+    public function getPanier(): Collection
+    {
+        return $this->panier;
+    }
+
+    public function addPanier(Produit $panier): static
+    {
+        if (!$this->panier->contains($panier)) {
+            $this->panier->add($panier);
+            $panier->addPanier($this);
+        }
+
+        return $this;
+    }
+
+    public function removePanier(Produit $panier): static
+    {
+        if ($this->panier->removeElement($panier)) {
+            $panier->removePanier($this);
+        }
 
         return $this;
     }

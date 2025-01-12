@@ -10,15 +10,30 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 #[Route('/category')]
 class CategoryController extends AbstractController
 {
     #[Route('/', name: 'app_category_index', methods: ['GET'])]
-    public function index(CategoryRepository $categoryRepository): Response
+    public function index(CategoryRepository $categoryRepository, TokenStorageInterface $tokenStorage,
+    AuthorizationCheckerInterface $authChecker): Response
     {
+        $token = $tokenStorage->getToken();
+    
+        if (!$token || !$token->getUser()) {
+            throw $this->createAccessDeniedException('No user is logged in.');
+        }
+    
+        if ($authChecker->isGranted('ROLE_ADMIN')) {
+            // L'utilisateur a le rôle ROLE_ADMIN
+        }
+    
+        $user = $token->getUser();
         return $this->render('category/category.html.twig', [
             'categories' => $categoryRepository->findAll(),
+            'user' => $user,
         ]);
     }
 

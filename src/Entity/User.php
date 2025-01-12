@@ -49,6 +49,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
+    #[ORM\Column(length: 255)]
+    private ?string $imageUser = null;
+
     public function __construct()
     {
         $this->UserCommande = new ArrayCollection();
@@ -98,11 +101,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
+        return $this->roles;
     }
 
     public function setRoles(array $roles): static
@@ -111,6 +110,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    public function getRole(): ?string
+{
+    // Retourne le premier rôle (utile pour formulaire avec choix unique)
+    return $this->roles[0] ?? null;
+}
+
+public function setRole(string $role): self
+{
+    // Définit un seul rôle dans le tableau
+    $this->roles = [$role];
+
+    return $this;
+}
 
     /**
      * @see PasswordAuthenticatedUserInterface
@@ -241,4 +253,16 @@ public function __toString(): string
         // Retournez une représentation significative de l'utilisateur
         return $this->getNom(); // ou une autre propriété, comme l'email ou le nom
     }
+
+public function getImageUser(): ?string
+{
+    return $this->imageUser;
+}
+
+public function setImageUser(string $imageUser): static
+{
+    $this->imageUser = $imageUser;
+
+    return $this;
+}
  }

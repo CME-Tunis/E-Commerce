@@ -24,6 +24,7 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
 
     public function __construct(private UrlGeneratorInterface $urlGenerator)
     {
+        $this->urlGenerator = $urlGenerator;
     }
 
     public function authenticate(Request $request): Passport
@@ -47,7 +48,10 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
-
+        $user = $token->getUser();
+        if(in_array('ROLE_ADMIN',$user->getRoles(),true)){
+            return new RedirectResponse($this->urlGenerator->generate('app_admin'));
+         }
         // For example:
         return new RedirectResponse($this->urlGenerator->generate('app_account'));
         //throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
