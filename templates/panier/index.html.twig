@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Panier index{% endblock %}
+
+{% block body %}
+    <h1>Panier index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+               
+                <th>Nom Prouit</th>
+                
+  <th>Image</th>
+  <th>Prix Unitaire</th>
+   <th>Quantité</th>
+    <th>Quantité Panier</th>
+      
+   <th>Prix Totale</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for panier in paniers %}
+            <tr>
+                <td>{{ panier.id }}</td>
+               
+                <td>{{ panier.panierProd.nomP}}</td>
+                <td> <img src="{{ asset('produit/' ~  panier.panierProd.image) }}" width="150px"></td>
+                
+                <td>{{ panier.panierProd.prix }}</td>
+                <td>{{ panier.panierProd.stock }}</td>
+                  <td>{{ panier.quantite }} </td>
+                  <td>{{ panier.prixTotale }} TND</td>
+                <td>
+                    <a href="{{ path('app_panier_show', {'id': panier.id}) }}">show</a>
+                    <a href="{{ path('app_panier_edit', {'id': panier.id}) }}">edit</a>
+                       <a href="{{ path('app_panier_delete', {'id': panier.id}) }}">delete</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_panier_new') }}">Create new</a>
+{% endblock %}
