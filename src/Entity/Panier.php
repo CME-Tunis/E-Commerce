@@ -26,6 +26,8 @@ class Panier
     #[ORM\Column]
     private ?float $prixTotale = null;
 
+    
+
     public function getId(): ?int
     {
         return $this->id;
@@ -86,4 +88,6 @@ class Panier
             $this->prixTotale = $this->panierProd->getPrix() * $this->quantite;
         }
     }
+
+ 
 }

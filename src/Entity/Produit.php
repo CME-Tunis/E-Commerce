@@ -111,7 +111,7 @@ class Produit
     public function setStatus(Status $status): self
     {
         $this->status = $status;
-        return $this;
+        return $this; 
     }
 
     public function getPrix(): ?float

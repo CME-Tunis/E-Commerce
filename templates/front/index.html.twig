@@ -606,7 +606,7 @@
 		<div class="container">
 			<div class="p-b-10">
 			<h3 class="ltext-103 cl5 text-center">
-			Our Products
+			Our Product
 			</h3>
 		</div>
 
@@ -716,12 +716,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 },
                 body: JSON.stringify({ quantite: quantity }),
             })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Erreur lors de la requête");
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         alert("Produit ajouté au panier avec succès !");
@@ -737,6 +732,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
 </script>
 
 	<!-- Footer -->

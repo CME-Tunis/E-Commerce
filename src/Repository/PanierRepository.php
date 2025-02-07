@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Panier;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,7 +26,15 @@ class PanierRepository extends ServiceEntityRepository
     private EntityManagerInterface $entityManager;
 
    
-
+    public function findPaniersByUser(User $user): array
+    {
+        return $this->createQueryBuilder('p')
+            ->join('p.panierCommande', 'c') // Lier Panier à Commande
+            ->andWhere('c.user = :user') // Filtrer par l'utilisateur via la commande
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
     public function save(Panier $panier): void
     {
         $this->entityManager->persist($panier);

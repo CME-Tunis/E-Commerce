@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Entity;
-
+use App\Entity\User;
+use App\Enum\StatusCommande;
 use App\Repository\CommandeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -30,6 +31,10 @@ class Commande
     #[ORM\OneToMany(targetEntity: Panier::class, mappedBy: 'panierCommande')]
     private Collection $commandePanier;
 
+   
+    #[ORM\Column(type: 'string', enumType: StatusCommande::class)]
+    private StatusCommande $statusCommande;
+
   
 
     public function __construct()
@@ -46,7 +51,14 @@ class Commande
     {
         return $this->date;
     }
-
+    public function getPaniersForUser(User $user): array
+    {
+        if ($this->user === $user) {
+            return $this->commandePanier->toArray(); // Retourner les paniers si l'utilisateur correspond
+        }
+    
+        return [];
+    }
     public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
@@ -106,6 +118,18 @@ class Commande
                 $commandePanier->setPanierCommande(null);
             }
         }
+
+        return $this;
+    }
+ 
+    public function getStatusCommande(): StatusCommande
+    {
+        return $this->statusCommande;
+    }
+
+    public function setStatusCommande(StatusCommande $statusCommande): self
+    {
+        $this->statusCommande = $statusCommande;
 
         return $this;
     }

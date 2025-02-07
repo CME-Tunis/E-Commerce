@@ -6,7 +6,10 @@ use App\Entity\Panier;
 use App\Entity\Produit;
 use App\Form\PanierType;
 use App\Repository\PanierRepository;
+use App\Repository\CommandeRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
+
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,12 +24,25 @@ class PanierController extends AbstractController
         Produit $produit, 
         Request $request, 
         EntityManagerInterface $entityManager, 
-        PanierRepository $panierRepository
+        PanierRepository $panierRepository,
+        CommandeRepository $commandeRepository,
+        Security $security
     ): JsonResponse {
+        // Récupérer l'utilisateur connecté
+        $user = $security->getUser();
+        if (!$user) {
+            return new JsonResponse(['success' => false, 'message' => 'Utilisateur non connecté'], 403);
+        }
+    
+        // Récupérer la commande en cours de l'utilisateur
+        $commande = $commandeRepository->findOneBy(['user' => $user, 'status' => 'en_cours']);
+    
+        if (!$commande) {
+            return new JsonResponse(['success' => false, 'message' => 'Aucune commande en cours'], 404);
+        }
+    
         // Décoder les données JSON
         $data = json_decode($request->getContent(), true);
-    
-        // Récupérer la quantité (par défaut à 1 si non précisée)
         $quantite = $data['quantite'] ?? 1;
     
         // Vérifier si la quantité est valide
@@ -39,30 +55,31 @@ class PanierController extends AbstractController
             return new JsonResponse(['success' => false, 'message' => 'Stock insuffisant'], 400);
         }
     
-        // Vérifier si le produit existe déjà dans le panier
-        $panier = $panierRepository->findOneBy(['panierProd' => $produit]);
+        // Vérifier si le produit est déjà dans le panier de cette commande
+        $panier = $panierRepository->findOneBy(['panierProd' => $produit, 'panierCommande' => $commande]);
     
         if ($panier) {
-            // Si le produit existe, mettre à jour la quantité
-            $ancienneQuantite = $panier->getQuantite();
-            $nouvelleQuantite = $ancienneQuantite + $quantite;
+            // Mise à jour de la quantité
+            $nouvelleQuantite = $panier->getQuantite() + $quantite;
     
-            // Vérifier si la quantité totale dépasse le stock disponible
-            if ($produit->getStock() < $quantite) {
-                return new JsonResponse(['success' => false, 'message' => 'Stock insuffisant pour la mise à jour'], 400);
+            // Vérifier le stock avant mise à jour
+            if ($produit->getStock() < $nouvelleQuantite) {
+                return new JsonResponse(['success' => false, 'message' => 'Stock insuffisant'], 400);
             }
     
             $panier->setQuantite($nouvelleQuantite);
-            $panier->calculerPrixTotale(); // Recalculer le prix total
         } else {
-            // Si le produit n'existe pas, créer une nouvelle ligne dans le panier
+            // Création d'un nouveau panier pour cette commande
             $panier = new Panier();
             $panier->setPanierProd($produit);
+            $panier->setPanierCommande($commande); // Associer au bon panier de la commande
             $panier->setQuantite($quantite);
-            $panier->calculerPrixTotale(); // Calculer le prix total (quantité x prix)
         }
     
-        // Réduire le stock dans la table Produit
+        // Mise à jour du prix total du panier
+        $panier->setPrixTotale($panier->getQuantite() * $produit->getPrix());
+    
+        // Mise à jour du stock du produit
         $produit->setStock($produit->getStock() - $quantite);
     
         // Sauvegarder les modifications

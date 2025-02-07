@@ -237,58 +237,31 @@
 			
 			<div class="header-cart-content flex-w js-pscroll">
 				<ul class="header-cart-wrapitem w-full">
+				{% for panier in paniers %}
 					<li class="header-cart-item flex-w flex-t m-b-12">
 						<div class="header-cart-item-img">
-							<img src="{{asset ('images/item-cart-01.jpg')}}" alt="IMG">
+							<img src="{{ asset('produit/' ~  panier.panierProd.image) }}"  alt="IMG">
 						</div>
 
 						<div class="header-cart-item-txt p-t-8">
 							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-								White Shirt Pleat
+								{{ panier.panierProd.nomP }}
 							</a>
 
 							<span class="header-cart-item-info">
-								1 x $19.00
+								{{ panier.quantite }} x {{ panier.panierProd.prix }} TND
 							</span>
 						</div>
 					</li>
+{% endfor %}
+					
 
-					<li class="header-cart-item flex-w flex-t m-b-12">
-						<div class="header-cart-item-img">
-							<img src="{{asset ('images/item-cart-02.jpg')}}" alt="IMG">
-						</div>
-
-						<div class="header-cart-item-txt p-t-8">
-							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-								Converse All Star
-							</a>
-
-							<span class="header-cart-item-info">
-								1 x $39.00
-							</span>
-						</div>
-					</li>
-
-					<li class="header-cart-item flex-w flex-t m-b-12">
-						<div class="header-cart-item-img">
-							<img src="{{asset ('images/item-cart-03.jpg')}}" alt="IMG">
-						</div>
-
-						<div class="header-cart-item-txt p-t-8">
-							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
-								Nixon Porter Leather
-							</a>
-
-							<span class="header-cart-item-info">
-								1 x $17.00
-							</span>
-						</div>
-					</li>
 				</ul>
 				
 				<div class="w-full">
-					<div class="header-cart-total w-full p-tb-40">
-						Total: $75.00
+				
+					<div class="header-cart-total w-full p-tb-40" id="somme-totale">
+					{{ sommeTotale }}
 					</div>
 
 					<div class="header-cart-buttons flex-w w-full">
@@ -348,74 +321,74 @@
 									<td class="column-3">{{ panier.panierProd.prix }} TND</td>
 									<td class="column-4">
 										<div class="wrap-num-product flex-w m-l-auto m-r-0">
-											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m"
-            data-product-id="{{ panier.panierProd.id }}">
-            <i class="fs-16 zmdi zmdi-minus"></i>
-        </div>
+											<div 
+                        class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m" 
+                        data-panier-id="{{ panier.id }}">
+                        <i class="fs-16 zmdi zmdi-minus"></i>
+                    </div>
 
-        <input 
-            class="mtext-104 cl3 txt-center num-product" 
-            type="number" 
-            name="num-product1" 
-            value="{{ panier.quantite }}" 
-            min="1" 
-            data-product-id="{{ panier.panierProd.id }}">
+         <input 
+                        class="mtext-104 cl3 txt-center num-product" 
+                        type="number" 
+                        name="num-product1" 
+                        value="{{ panier.quantite }}" 
+                        min="1" 
+                        data-panier-id="{{ panier.id }}"/>
 
-        <div 
-            class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m"
-            data-product-id="{{ panier.panierProd.id }}">
-            <i class="fs-16 zmdi zmdi-plus"></i>
-        </div>
+       <div 
+                        class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m" 
+                        data-panier-id="{{ panier.id }}">
+                        <i class="fs-16 zmdi zmdi-plus"></i>
+                    </div>
 										</div>
 									</td>
-								<td class="column-5" data-product-id="{{ panier.panierProd.id }}">
+								<td class="column-5" data-panier-id="{{ panier.id }}">
     {{ panier.prixTotale }} TND
 </td>
 								</tr>
 
 			{% endfor %}					
 							</table>
-		<script>
-document.querySelectorAll('.btn-num-product-up, .btn-num-product-down').forEach(button => {
-    button.addEventListener('click', (event) => {
-        const productId = button.getAttribute('data-product-id');
-        const isIncrement = button.classList.contains('btn-num-product-up');
-        const quantityInput = document.querySelector(`input[data-product-id="${productId}"]`);
-        const totalPriceCell = document.querySelector(`.column-5[data-product-id="${productId}"]`);
 
-        let currentQuantity = parseInt(quantityInput.value);
+<script>
+document.querySelectorAll('.btn-num-product-up, .btn-num-product-down').forEach(element => {
+    element.addEventListener('click', (event) => {
+        const panierId = element.getAttribute('data-panier-id');
+        const isIncrement = element.classList.contains('btn-num-product-up');
+        const quantityInput = document.querySelector(`input[data-panier-id="${panierId}"]`);
+        const totalPriceCell = document.querySelector(`.column-5[data-panier-id="${panierId}"]`);
+        const sommeTotaleElement = document.getElementById('somme-totale');
+
+        if (!quantityInput || !totalPriceCell) {
+            console.error(`Élément introuvable pour l'ID du panier : ${panierId}`);
+            return;
+        }
+
+        let currentQuantity = parseInt(quantityInput.value, 10);
         const newQuantity = isIncrement ? currentQuantity + 1 : Math.max(1, currentQuantity - 1);
 
-        fetch(`/shoping-cart/update/${productId}`, {
+        fetch(`/shoping-cart/update/${panierId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ quantite: newQuantity }),
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Erreur HTTP ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                // Mettre à jour la quantité et le prix total
-                quantityInput.value = newQuantity;
-                totalPriceCell.textContent = `${data.newTotalPrice.toFixed(2)} TND`;
-            } else {
-                alert(data.message || 'Erreur lors de la mise à jour.');
-            }
-        })
-        .catch(error => console.error('Erreur :', error));
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    quantityInput.value = newQuantity;
+                    totalPriceCell.textContent = `${data.newTotalPrice.toFixed(2)} TND`;
+                    sommeTotaleElement.textContent = `${data.sommeTotale.toFixed(2)}`;
+                } else {
+                    alert(data.message || 'Erreur lors de la mise à jour.');
+                }
+            })
+            .catch(error => console.error('Erreur :', error));
     });
 });
 
-
 </script>
-
-
 						</div>
 
 
@@ -450,7 +423,7 @@ document.querySelectorAll('.btn-num-product-up, .btn-num-product-down').forEach(
 
 							<div class="size-209">
 								<span class="mtext-110 cl2">
-									$79.65
+									{{ sommeTotale }}
 								</span>
 							</div>
 						</div>
