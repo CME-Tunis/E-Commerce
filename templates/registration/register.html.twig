@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign Up CME SHOP</title>
+
+    <!-- Font Icon -->
+    <link rel="stylesheet" href="{{ asset ('register/fonts/material-icon/css/material-design-iconic-font.min.css') }}">
+
+    <!-- Main css -->
+    <link rel="stylesheet" href="{{ asset ('register/css/style.css') }}">
+</head>
+<body>
+
+    <div class="main">
+        <div class="container">
+            <div class="signup-content">
+                <div class="signup-img">
+                    <img src="{{ asset ('register/images/about-01.jpg')}}" alt="">
+                </div>
+
+{% block body %}
+    {% for flash_error in app.flashes('verify_email_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+
+ 
+              
+<div class="signup-form">
+                {{ form_errors(registrationForm) }}
+
+                {{ form_start(registrationForm, {'attr': {'class': 'register-form', 'novalidate': 'novalidate'}}) }}
+                
+                <div class="form-row">
+                            <div class="form-group">
+                        {{ form_row(registrationForm.nom, {
+                             'label': 'Last Name','attr': {'class': 'form-control', 'placeholder': 'Your Last Name'}}) }}
+
+                        </div>  
+                          <div class="form-group">
+                        
+                        {{ form_row(registrationForm.prenom, {
+                            'label': 'First Name',
+                            'attr': {'class': 'form-control', 'placeholder': 'Your First Name '}}) }}
+                  
+  </div>
+                        </div>
+                 
+                <div class="form-row">
+                            <div class="form-group">
+                        {{ form_row(registrationForm.cin, {
+                            'label': 'CIN',
+                            'attr': {'class': 'form-control', 'placeholder': 'Your CIN'}}) }}
+                   
+                  </div>  
+                          <div class="form-group">
+                        {{ form_row(registrationForm.tel, {
+                            'label': 'Phone Number',
+                            'attr': {'class': 'form-control', 'placeholder': 'Your Phone Number'}}) }}
+               
+            
+</div>
+                        </div>
+                        <div class="form-group">
+    {{ form_row(registrationForm.imageUser, {
+        'label': 'Upload Image',
+        'attr': {'class': 'form-control'}
+    }) }}
+</div>
+             <div class="form-group">
+                    {{ form_row(registrationForm.email, {
+                        'label': 'Email',
+                        'attr': {'class': 'form-control', 'placeholder': 'Your Email Address'}}) }}
+          
+
+               </div>
+                 <div class="form-group">
+                    {{ form_row(registrationForm.plainPassword, {
+                        'label': 'Password',
+                        'attr': {'class': 'form-control', 'placeholder': 'Choose a Password'}
+                    }) }}
+              
+               </div>
+                <div class="form-group">
+                    {{ form_row(registrationForm.agreeTerms, {
+                        'label': 'Agree Terms',
+                        'attr': {'class': 'form-check-input'}
+                    }) }}
+                 
+            </div>
+
+               
+                <div class="form-submit">
+                            <input type="submit" value="Reset All" class="submit" name="reset" id="reset" />
+                            <input type="submit" value="Submit Form" class="submit" name="Sign Up" id="submit" />
+                        </div>
+
+                {{ form_end(registrationForm) }}
+            </div>
+        </div>
+   
+{% endblock %}
