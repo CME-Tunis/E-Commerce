@@ -500,14 +500,9 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
   line-height: 15px;
   text-align: center;
 
-  display: block;
+  display: none;
   position: absolute;
-  top: -7px;
-  right: 0;
-  min-width: 15px;
-  height: 15px;
-  padding: 0 3px;
-  background-color: #f78529;
+  
 }
 
 /*---------------------------------------------*/

@@ -19,33 +19,70 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class BoutiqueController extends AbstractController
 {
     #[Route('/boutique', name: 'app_boutique')]
-    public function index(ProduitRepository $produitRepository, CategoryRepository $categorieRepository,  PanierRepository $panierRepository
+    public function index(?int $id,ProduitRepository $produitRepository, CategoryRepository $categorieRepository,  PanierRepository $panierRepository
     ,   Security $security,): Response
     {
-        $user = $security->getUser();
-        if (!$user) {
-            return $this->redirectToRoute('app_login');
-        }
-    
-        // Récupérer uniquement le panier de l'utilisateur connecté
-        $paniers = $panierRepository->findBy(['panierUser' => $user]);
-        $quantitePanier = 0;
-
-        if ($user) {
-            // Récupérer la quantité totale des produits dans le panier de l'utilisateur connecté
-            $quantitePanier = $panierRepository->getQuantiteTotaleParUtilisateur($user);
-        }
-        // Calculer le montant total uniquement pour cet utilisateur
-        $sommeTotale = $panierRepository->getTotalPanierByUser($user);
-        return $this->render('boutique/index.html.twig', [
-          
-            'produits' => $produitRepository->findAll(),
-            'sommeTotale' => $sommeTotale,
-            'paniers' => $paniers,
-            'categories' => $categorieRepository->findAll(),
-            'quantitePanier' => $quantitePanier,
-        ]);
+         // Vérifier si l'utilisateur est connecté
+    $user = $security->getUser();
+    if (!$user) {
+        return $this->json(['success' => false, 'message' => 'Utilisateur non connecté'], 403);
     }
+
+    // Récupérer le produit
+    if ($id) {
+        $produit = $produitRepository->find($id);
+
+        if (!$produit) {
+            throw $this->createNotFoundException('Produit non trouvé.');
+        }
+    } else {
+        $produit = null;  // Ou gérer le cas autrement si besoin
+    }
+
+    // Vérification du stock disponible
+    if ($produit->getStock() < 1) {
+        return $this->json(['success' => false, 'message' => 'Produit en rupture de stock'], 400);
+    }
+
+    // Vérifier si le produit est déjà dans le panier
+    $panier = $panierRepository->findOneBy(['panierUser' => $user, 'panierProd' => $produit]);
+
+    if ($panier) {
+        $nouvelleQuantite = $panier->getQuantite() + 1;
+
+        if ($nouvelleQuantite > $produit->getStock()) {
+            return $this->json(['success' => false, 'message' => 'Quantité demandée supérieure au stock disponible'], 400);
+        }
+
+        $panier->setQuantite($nouvelleQuantite);
+        $panier->setPrixTotale($produit->getPrix() * $panier->getQuantite());
+    } else {
+        $panier = new Panier();
+        $panier->setPanierUser($user);
+        $panier->setPanierProd($produit);
+        $panier->setQuantite(1);
+        $panier->setPrixTotale($produit->getPrix());
+        $entityManager->persist($panier);
+    }
+
+    $entityManager->flush();
+
+    // Recalculer le total du panier
+    $sommeTotale = $panierRepository->getTotalPanierByUser($user);
+    $quantiteTotale = $panierRepository->getQuantiteTotaleParUtilisateur($user);
+
+    return $this->json([
+        'success' => true,
+        'message' => 'Produit ajouté au panier',
+        'panierId' => $panier->getId(),
+        'quantite' => $panier->getQuantite(),
+        'newTotalPrice' => number_format($panier->getPrixTotale(), 3, '.', ''),
+        'sommeTotale' => number_format($sommeTotale, 3, '.', ''),
+        'quantiteTotale' => $quantiteTotale,
+        'productName' => $produit->getNomP(),
+        'productPrice' => number_format($produit->getPrix(), 3, '.', '')
+    ]);
+}
     #[Route('/boutique/add/{id}', name: 'add_to_cart', methods: ['GET','POST'])]
     public function addToCart(
         int $id,
@@ -152,6 +189,8 @@ class BoutiqueController extends AbstractController
             'sommeTotale' => number_format($sommeTotale, 3, '.', '')
         ]);
     } 
+    
+
     
     #[Route('/boutique/update/{id}', name: 'update_boutique_cart', methods: ['GET', 'POST'])]
     public function updateBoutiqueCartItem(

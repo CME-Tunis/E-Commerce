@@ -12,6 +12,7 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Component\Security\Core\Security;
 use App\Repository\PanierRepository;
+use Symfony\Component\HttpFoundation\Request;
 class AccountController extends AbstractController
 {
     #[Route('/account/{id?}', name: 'app_account')]
@@ -20,20 +21,21 @@ class AccountController extends AbstractController
         Security $security,
         ?int $id,  // ID optionnel
         PanierRepository $panierRepository,
-        CategoryRepository $categorieRepository
+        CategoryRepository $categorieRepository,
+        Request $request
     ): Response {
         $user = $security->getUser();
         
         if (!$user) {
             return $this->redirectToRoute('app_login');
         }
-        $quantitePanier = 0;
-
-        if ($user) {
-            // Récupérer la quantité totale des produits dans le panier de l'utilisateur connecté
-            $quantitePanier = $panierRepository->getQuantiteTotaleParUtilisateur($user);
-        }
-    
+     
+    // Gestion AJAX pour mise à jour dynamique
+    if ($request->isXmlHttpRequest()) {
+        return $this->json([
+            'quantitePanier' => $quantitePanier
+        ]);
+    }
         // Si l'ID est présent, on récupère le produit, sinon on ne fait pas de recherche
         if ($id) {
             $produit = $produitRepository->find($id);
@@ -55,8 +57,8 @@ class AccountController extends AbstractController
             'controller_name' => 'AccountController',
             'produits' => $produitRepository->findAll(),
             'categories' => $categorieRepository->findAll(),
-            'quantitePanier' => $quantitePanier,
+   
         ]);
     }
-    
+     
 }

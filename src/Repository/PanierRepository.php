@@ -48,15 +48,15 @@ class PanierRepository extends ServiceEntityRepository
         $this->entityManager->persist($panier);
         $this->entityManager->flush();
     }
-    public function getQuantiteTotaleParUtilisateur($user): int
-{
-    return $this->createQueryBuilder('p')
-        ->select('SUM(p.quantite)')
-        ->where('p.panierUser = :user')
-        ->setParameter('user', $user)
-        ->getQuery()
-        ->getSingleScalarResult();
-}
+//     public function getQuantiteTotaleParUtilisateur($user): int
+// {
+//     return $this->createQueryBuilder('p')
+//         ->select('SUM(p.quantite)')
+//         ->where('p.panierUser = :user')
+//         ->setParameter('user', $user)
+//         ->getQuery()
+//         ->getSingleScalarResult();
+// }
 
 //    /**
 //     * @return Panier[] Returns an array of Panier objects

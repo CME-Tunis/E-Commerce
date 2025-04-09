@@ -33,6 +33,9 @@ class Commande
     #[ORM\OneToMany(targetEntity: Panier::class, mappedBy: 'panierCommande')]
     private Collection $commandePanier;
 
+    #[ORM\Column]
+    private ?int $quatiteReserve = null;
+
   
 
     public function __construct()
@@ -112,6 +115,18 @@ class Commande
                 $commandePanier->setPanierCommande(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getQuatiteReserve(): ?int
+    {
+        return $this->quatiteReserve;
+    }
+
+    public function setQuatiteReserve(int $quatiteReserve): static
+    {
+        $this->quatiteReserve = $quatiteReserve;
 
         return $this;
     }

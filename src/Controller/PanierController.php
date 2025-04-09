@@ -168,40 +168,40 @@ public function voirMonPanier(PanierRepository $panierRepository): JsonResponse
     ]);
     }
 
-    // Optionnel : une fonction pour valider la commande à partir du panier
-    #[Route('/valider-commande', name: 'valider_commande')]
-    public function validerCommande(): Response
-    {
-        $user = $this->security->getUser();
+    // // Optionnel : une fonction pour valider la commande à partir du panier
+    // #[Route('/valider-commande', name: 'valider_commande')]
+    // public function validerCommande(): Response
+    // {
+    //     $user = $this->security->getUser();
 
-        if (!$user) {
-            return $this->redirectToRoute('app_login'); // Rediriger vers la page de login
-        }
+    //     if (!$user) {
+    //         return $this->redirectToRoute('app_login'); // Rediriger vers la page de login
+    //     }
 
-        // Récupérer le panier actif de l'utilisateur
-        $panier = $this->entityManager->getRepository(Panier::class)->findOneBy([
-            'user' => $user,
-            'panierCommande' => null, // Vérifier si ce panier n'est pas encore associé à une commande
-        ]);
+    //     // Récupérer le panier actif de l'utilisateur
+    //     $panier = $this->entityManager->getRepository(Panier::class)->findOneBy([
+    //         'user' => $user,
+    //         'panierCommande' => null, // Vérifier si ce panier n'est pas encore associé à une commande
+    //     ]);
 
-        if (!$panier) {
-            // Si aucun panier trouvé, rediriger l'utilisateur
-            return $this->redirectToRoute('associer_panier');
-        }
+    //     if (!$panier) {
+    //         // Si aucun panier trouvé, rediriger l'utilisateur
+    //         return $this->redirectToRoute('associer_panier');
+    //     }
 
-        // Créer une commande pour l'utilisateur
-        $commande = new Commande();
-        $commande->setUser($user);
-        $commande->setDate(new \DateTime());
-        $commande->setStatusCommande('EN_COURS');
-        $this->entityManager->persist($commande);
+    //     // Créer une commande pour l'utilisateur
+    //     $commande = new Commande();
+    //     $commande->setUser($user);
+    //     $commande->setDate(new \DateTime());
+    //     $commande->setStatusCommande('EN_COURS');
+    //     $this->entityManager->persist($commande);
 
-        // Associer le panier à la commande
-        $panier->setPanierCommande($commande);
-        $this->entityManager->flush();
+    //     // Associer le panier à la commande
+    //     $panier->setPanierCommande($commande);
+    //     $this->entityManager->flush();
 
-        return $this->redirectToRoute('commande_details', ['id' => $commande->getId()]);
-    }
+    //     return $this->redirectToRoute('commande_details', ['id' => $commande->getId()]);
+    // }
 
     // #[Route('/contenu', name: 'panier_contenu')]
 
